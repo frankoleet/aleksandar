@@ -497,7 +497,7 @@ export default function App() {
               <span>
                 Aleksandar •{" "}
                 <a
-                  href="https://t.me/your_tg"
+                  href="https://t.me/frankoleet"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-cyan-300/70 hover:text-cyan-300 transition-colors"
