@@ -225,7 +225,7 @@ export default function App() {
   const handlePrint = () => window.print();
 
   return (
-    <div className="min-h-screen bg-[#020d10] text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="min-h-screen bg-[#020d10] text-white">
 
       <Particles />
 
