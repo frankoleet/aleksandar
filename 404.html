@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <title>Aleksandar</title>
     <script>
-      window.location.replace("/aleksandar/");
+      var path = window.location.pathname;
+      var base = "/aleksandar";
+      var rest = path.replace(base, "") || "/";
+      sessionStorage.setItem("redirect", rest);
+      window.location.replace(base + "/");
     </script>
   </head>
   <body></body>
