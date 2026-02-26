@@ -75,6 +75,33 @@ const Badge = ({ children }) => (
   </span>
 );
 
+// ── Навигация ─────────────────────────────────────────────────────────────────
+const NavBar = () => (
+  <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-12 pt-6 print:hidden">
+    <div className="flex justify-center">
+      <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
+        {[
+          { label: "Profile", href: "/" },
+          { label: "Reviews", href: "/aleksandar/reviews" },
+          { label: "About", href: "/about" },
+        ].map((item) => (
+          <a
+            key={item.label}
+            href={item.href}
+            className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
+              item.label === "Profile"
+                ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
+                : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
+            }`}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </div>
+  </div>
+);
+
 const Section = ({ icon: Icon, title, subtitle, children }) => (
   <motion.section
     className="rounded-2xl border border-cyan-400/10 bg-[#041a1f]/60 p-5 shadow-[0_0_0_1px_rgba(34,211,238,0.05),0_18px_60px_rgba(0,0,0,0.6)] backdrop-blur"
@@ -232,8 +259,10 @@ export default function App() {
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.2]" style={{ backgroundImage: "radial-gradient(circle at 15% 10%, rgba(6,182,212,0.35) 0, rgba(0,0,0,0) 45%), radial-gradient(circle at 85% 35%, rgba(20,184,166,0.25) 0, rgba(0,0,0,0) 55%), radial-gradient(circle at 50% 95%, rgba(34,211,238,0.18) 0, rgba(0,0,0,0) 45%)" }} />
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(to_bottom,rgba(6,182,212,0.04),transparent_30%,transparent_70%,rgba(20,184,166,0.03))]" />
 
+      <NavBar />
+
       {/* HEADER */}
-      <header className="relative z-10 mx-auto w-full max-w-screen-2xl px-12 pb-6 pt-10 print:pt-4">
+      <header className="relative z-10 mx-auto w-full max-w-screen-2xl px-12 pb-6 pt-4 print:pt-4">
         <motion.div
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="rounded-3xl border border-cyan-400/15 bg-[#041a1f]/60 p-6 shadow-[0_0_0_1px_rgba(6,182,212,0.08),0_24px_70px_rgba(0,0,0,0.65)] backdrop-blur"
