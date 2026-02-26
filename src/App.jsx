@@ -81,8 +81,8 @@ const NavBar = () => (
     <div className="flex justify-center">
       <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
         {[
-          { label: "Profile", href: "/" },
-          { label: "Reviews", href: "/aleksandar/reviews" },
+          { label: "Profile", href: "https://frankoleet.github.io/aleksandar" },
+          { label: "Reviews", href: "https://frankoleet.github.io/aleksandar/reviews" },
           { label: "About", href: "/about" },
         ].map((item) => (
           <a
