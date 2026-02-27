@@ -68,7 +68,7 @@ const NavBar = ({ current }) => (
   <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-12 pt-6">
     {/* Desktop: Aleksandar слева, nav по центру, пустой блок справа */}
     <div className="hidden md:flex items-center justify-between">
-      <a href="/" className="flex items-center gap-2 text-cyan-300/70 hover:text-cyan-300 transition-colors text-sm">
+      <a href="https://frankoleet.github.io/aleksandar" className="flex items-center gap-2 text-cyan-300/70 hover:text-cyan-300 transition-colors text-sm">
         <ArrowLeft className="h-4 w-4" />
         <span>Profile</span>
       </a>
@@ -115,7 +115,7 @@ const NavBar = ({ current }) => (
           </a>
         ))}
       </nav>
-      <a href="/" className="flex items-center gap-2 text-cyan-300/70 hover:text-cyan-300 transition-colors text-sm">
+      <a href="https://frankoleet.github.io/aleksandar" className="flex items-center gap-2 text-cyan-300/70 hover:text-cyan-300 transition-colors text-sm">
         <ArrowLeft className="h-4 w-4" />
         <span>Profile</span>
       </a>
