@@ -66,13 +66,13 @@ const Chip = ({ children, active, onClick }) => (
 // ── Навигация (общая для обеих страниц) ───────────────────────────────────────
 const NavBar = ({ current }) => (
   <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-12 pt-6">
-    {/* Desktop: Aleksandar слева, nav по центру, пустой блок справа */}
+    {/* Desktop */}
     <div className="hidden md:flex items-center justify-between">
       <a href="https://frankoleet.github.io/aleksandar" className="flex items-center gap-2 text-cyan-300/70 hover:text-cyan-300 transition-colors text-sm">
         <ArrowLeft className="h-4 w-4" />
         <span>Profile</span>
       </a>
-      <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur">
+      <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
         {[
           { label: "Profile", href: "https://frankoleet.github.io/aleksandar" },
           { label: "Reviews", href: "https://frankoleet.github.io/aleksandar/reviews" },
@@ -81,7 +81,7 @@ const NavBar = ({ current }) => (
           <a
             key={item.label}
             href={item.href}
-            className={`rounded-xl px-4 py-1.5 text-sm font-medium transition-all ${
+            className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
               current === item.label
                 ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
                 : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
@@ -93,10 +93,9 @@ const NavBar = ({ current }) => (
       </nav>
       <div className="w-24" />
     </div>
-
-    {/* Mobile: nav сверху по центру, Aleksandar снизу по центру */}
+    {/* Mobile */}
     <div className="flex flex-col items-center gap-3 md:hidden">
-      <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur">
+      <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
         {[
           { label: "Profile", href: "https://frankoleet.github.io/aleksandar" },
           { label: "Reviews", href: "https://frankoleet.github.io/aleksandar/reviews" },
@@ -105,7 +104,7 @@ const NavBar = ({ current }) => (
           <a
             key={item.label}
             href={item.href}
-            className={`rounded-xl px-4 py-1.5 text-sm font-medium transition-all ${
+            className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
               current === item.label
                 ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
                 : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
