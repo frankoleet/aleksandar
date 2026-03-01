@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, Terminal, Clock, Eye, Tag, ArrowLeft,
@@ -64,31 +65,38 @@ const Chip = ({ children, active, onClick }) => (
 );
 
 // ── Навигация (общая для обеих страниц) ───────────────────────────────────────
-const NavBar = ({ active = "Reviews" }) => (
-  <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pt-6">
-    <div className="flex justify-center">
-      <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
-        {[
-          { label: "Profile", href: "https://frankoleet.github.io/aleksandar/" },
-          { label: "Reviews", href: "https://frankoleet.github.io/aleksandar/reviews" },
-          { label: "About",   href: "https://frankoleet.github.io/aleksandar/about" },
-        ].map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
-            className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
-              active === item.label
-                ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
-                : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
-            }`}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
+const NavBar = () => {
+  const location = useLocation();
+  const active = location.pathname === "/" ? "Profile"
+    : location.pathname === "/reviews" ? "Reviews"
+    : location.pathname === "/about" ? "About"
+    : "Profile";
+  return (
+    <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pt-6">
+      <div className="flex justify-center">
+        <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
+          {[
+            { label: "Profile", to: "/" },
+            { label: "Reviews", to: "/reviews" },
+            { label: "About",   to: "/about" },
+          ].map((item) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
+                active === item.label
+                  ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
+                  : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ── Данные статей ─────────────────────────────────────────────────────────────
 const articles = [
