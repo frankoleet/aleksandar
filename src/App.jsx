@@ -3,6 +3,14 @@ import { motion, useInView } from "framer-motion";
 import {
   Shield, Terminal, Radar, Medal, Briefcase, GraduationCap,
   Cpu, Layers, Sparkles, Search, Download, Github, Lock,
+  Timer,
+  SwissFranc,
+  ShieldAlert,
+  ShieldBan,
+  Target,
+  TargetIcon,
+  LockIcon,
+  LockOpenIcon,
 } from "lucide-react";
 
 // ── Частицы ───────────────────────────────────────────────────────────────────
@@ -76,20 +84,20 @@ const Badge = ({ children }) => (
 );
 
 // ── Навигация ─────────────────────────────────────────────────────────────────
-const NavBar = () => (
-  <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-12 pt-6 print:hidden">
+const NavBar = ({ active = "Profile" }) => (
+  <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pt-6 print:hidden">
     <div className="flex justify-center">
       <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
         {[
-          { label: "Profile", href: "https://frankoleet.github.io/aleksandar" },
+          { label: "Profile", href: "https://frankoleet.github.io/aleksandar/" },
           { label: "Reviews", href: "https://frankoleet.github.io/aleksandar/reviews" },
-          { label: "About", href: "/about" },
+          { label: "About",   href: "https://frankoleet.github.io/aleksandar/about" },
         ].map((item) => (
           <a
             key={item.label}
             href={item.href}
             className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
-              item.label === "Profile"
+              active === item.label
                 ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
                 : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
             }`}
@@ -262,12 +270,20 @@ export default function App() {
       <NavBar />
 
       {/* HEADER */}
-      <header className="relative z-10 mx-auto w-full max-w-screen-2xl px-12 pb-6 pt-4 print:pt-4">
+      <header className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pb-6 pt-4 print:pt-4">
         <motion.div
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="rounded-3xl border border-cyan-400/15 bg-[#041a1f]/60 p-6 shadow-[0_0_0_1px_rgba(6,182,212,0.08),0_24px_70px_rgba(0,0,0,0.65)] backdrop-blur"
+          className="relative rounded-3xl border border-cyan-400/15 overflow-hidden shadow-[0_0_0_1px_rgba(6,182,212,0.08),0_24px_70px_rgba(0,0,0,0.65)]"
         >
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          {/* ── ФОН ШАПКИ: раскомментируй строку ниже и вставь путь к своему фото ── */}
+          {/*<div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/aleksandar/ooo.png')" }} />*/}
+          {/* Оверлей — затемняет фото для читаемости текста, можно менять прозрачность */}
+          <div className="absolute inset-0 bg-[#041a1f]/80 backdrop-blur-sm" />
+          {/* Плавный градиент снизу */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#020d10]/60 via-transparent to-transparent" />
+
+          <div className="relative p-6">
+            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge><Shield className="mr-2 h-3.5 w-3.5" />INFOSEC PROFILE</Badge>
@@ -299,6 +315,7 @@ export default function App() {
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </motion.div>
       </header>
@@ -473,26 +490,68 @@ export default function App() {
       )}
 
     <style>{`
-        @media print {
-            html, body { 
-            height: 100vh; 
-            overflow: hidden !important; 
-            background: white !important; 
-            }
-            
-            .print\\:hidden { display: none !important; }
-            
-            * { 
-            -webkit-print-color-adjust: exact !important; 
-            print-color-adjust: exact !important; 
-            break-inside: avoid; 
-            }
-
-            /* Убираем лишние отступы, которые могут выталкивать контент */
-            @page {
-            margin: 0;
-            }
+      @media print {
+        /* 1. Включаем печать фоновых цветов и графики */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
+
+        /* 2. Скрываем всё лишнее */
+        body * {
+          visibility: hidden !important;
+        }
+
+        /* 3. Показываем только шапку и контакты */
+        header, header *,
+        .hidden.print\\:block, .hidden.print\\:block * {
+          visibility: visible !important;
+        }
+
+        /* 4. Стилизуем шапку */
+        header {
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
+          display: block !important;
+          padding: 0 !important;
+        }
+
+        /* Скрываем кнопки внутри шапки */
+        header .print\\:hidden {
+          display: none !important;
+        }
+
+        /* 5. Стилизуем блок контактов "как шапку" */
+        .hidden.print\\:block {
+          display: block !important;
+          position: absolute !important;
+          top: 300px !important; /* Отступ под шапкой */
+          left: 0 !important;
+          width: 100% !important;
+          
+          /* Повторяем дизайн шапки из твоего кода */
+          background-color: #041a1f !important;
+          border: 1px solid rgba(34, 211, 238, 0.15) !important;
+          border-radius: 1.5rem !important; /* rounded-3xl */
+          padding: 1.5rem !important;
+        }
+
+        /* Сетка для контактов внутри блока */
+        .hidden.print\\:block > div {
+          display: grid !important;
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 10px !important;
+          border: none !important;
+          background: transparent !important;
+        }
+
+        @page {
+          size: A4;
+          margin: 10mm;
+        }
+      }
     `}</style>
 
     </div>

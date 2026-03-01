@@ -64,25 +64,20 @@ const Chip = ({ children, active, onClick }) => (
 );
 
 // ── Навигация (общая для обеих страниц) ───────────────────────────────────────
-const NavBar = ({ current }) => (
-  <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-12 pt-6">
-    {/* Desktop */}
-    <div className="hidden md:flex items-center justify-between">
-      <a href="https://frankoleet.github.io/aleksandar" className="flex items-center gap-2 text-cyan-300/70 hover:text-cyan-300 transition-colors text-sm">
-        <ArrowLeft className="h-4 w-4" />
-        <span>Profile</span>
-      </a>
+const NavBar = ({ active = "Reviews" }) => (
+  <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pt-6">
+    <div className="flex justify-center">
       <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
         {[
-          { label: "Profile", href: "https://frankoleet.github.io/aleksandar" },
+          { label: "Profile", href: "https://frankoleet.github.io/aleksandar/" },
           { label: "Reviews", href: "https://frankoleet.github.io/aleksandar/reviews" },
-          { label: "About", href: "/about" },
+          { label: "About",   href: "https://frankoleet.github.io/aleksandar/about" },
         ].map((item) => (
           <a
             key={item.label}
             href={item.href}
             className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
-              current === item.label
+              active === item.label
                 ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
                 : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
             }`}
@@ -91,33 +86,6 @@ const NavBar = ({ current }) => (
           </a>
         ))}
       </nav>
-      <div className="w-24" />
-    </div>
-    {/* Mobile */}
-    <div className="flex flex-col items-center gap-3 md:hidden">
-      <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
-        {[
-          { label: "Profile", href: "https://frankoleet.github.io/aleksandar" },
-          { label: "Reviews", href: "https://frankoleet.github.io/aleksandar/reviews" },
-          { label: "About", href: "/about" },
-        ].map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
-            className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
-              current === item.label
-                ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
-                : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
-            }`}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
-      <a href="https://frankoleet.github.io/aleksandar" className="flex items-center gap-2 text-cyan-300/70 hover:text-cyan-300 transition-colors text-sm">
-        <ArrowLeft className="h-4 w-4" />
-        <span>Profile</span>
-      </a>
     </div>
   </div>
 );
@@ -541,11 +509,17 @@ export default function Reviews() {
         ) : (
           <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
             {/* Hero */}
-            <div className="relative z-10 mx-auto w-full max-w-screen-2xl px-12 pb-6 pt-8">
+            <div className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pb-6 pt-8">
               <motion.div
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-                className="rounded-3xl border border-cyan-400/15 bg-[#041a1f]/60 p-8 shadow-[0_0_0_1px_rgba(6,182,212,0.08),0_24px_70px_rgba(0,0,0,0.65)] backdrop-blur"
+                className="relative rounded-3xl border border-cyan-400/15 overflow-hidden shadow-[0_0_0_1px_rgba(6,182,212,0.08),0_24px_70px_rgba(0,0,0,0.65)]"
               >
+                {/* ── ФОН ШАПКИ: раскомментируй строку ниже и вставь путь к своему фото ── */}
+                {/* <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/your-photo.jpg')" }} /> */}
+                <div className="absolute inset-0 bg-[#041a1f]/80 backdrop-blur-sm" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020d10]/60 via-transparent to-transparent" />
+
+                <div className="relative p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="rounded-xl border border-cyan-400/25 bg-cyan-500/15 p-2.5">
                     <BookOpen className="h-6 w-6 text-cyan-300" />
@@ -576,11 +550,12 @@ export default function Reviews() {
                     ))}
                   </div>
                 </div>
+                </div>
               </motion.div>
             </div>
 
             {/* Сетка карточек */}
-            <main className="relative z-10 mx-auto w-full max-w-screen-2xl px-12 pb-16">
+            <main className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pb-16">
               <div className="mb-4 text-sm text-cyan-200/40">
                 {filtered.length} {filtered.length === 1 ? "статья" : filtered.length < 5 ? "статьи" : "статей"}
               </div>
