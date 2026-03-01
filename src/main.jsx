@@ -8,7 +8,7 @@ import About from './About.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename="/aleksandar">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/reviews" element={<Reviews />} />
