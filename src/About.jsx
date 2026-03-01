@@ -141,7 +141,7 @@ export default function About() {
           className="relative rounded-3xl border border-cyan-400/15 overflow-hidden shadow-[0_0_0_1px_rgba(6,182,212,0.08),0_24px_70px_rgba(0,0,0,0.65)]"
         >
           {/* ── ФОН ШАПКИ: раскомментируй строку ниже и вставь путь к своему фото ── */}
-          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/aleksandar/ooo.png')" }}/>
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('ooo.png')" }}/>
           <div className="absolute inset-0 bg-[#041a1f]/80 backdrop-blur-sm" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#020d10]/60 via-transparent to-transparent" />
 
