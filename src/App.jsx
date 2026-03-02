@@ -284,7 +284,7 @@ export default function App() {
           className="relative rounded-3xl border border-cyan-400/15 overflow-hidden shadow-[0_0_0_1px_rgba(6,182,212,0.08),0_24px_70px_rgba(0,0,0,0.65)]"
         >
           {/* ── ФОН ШАПКИ: раскомментируй строку ниже и вставь путь к своему фото ── */}
-          {/*<div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/aleksandar/ooo.png')" }} />*/}
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('c.gif')" }} />
           {/* Оверлей — затемняет фото для читаемости текста, можно менять прозрачность */}
           <div className="absolute inset-0 bg-[#041a1f]/80 backdrop-blur-sm" />
           {/* Плавный градиент снизу */}
