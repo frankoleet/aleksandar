@@ -101,6 +101,142 @@ const NavBar = () => {
 // ── Данные статей ─────────────────────────────────────────────────────────────
 const articles = [
   {
+  id: "meduza-firefox-analysis",
+  title: "Meduza Stealer: разбор кражи master-ключа Firefox",
+  preview: "Технический разбор механизма извлечения master-ключа из Firefox. Анализируем работу с key4.db, ASN.1, PBKDF2 и расшифровку логинов без эксплойтов.",
+  content: `## Разбираем работу Meduza Stealer
+
+Meduza Stealer — коммерческий инфостилер, появившийся в 2023 году. В этом разборе фокусируемся на механизме кражи паролей из Firefox и других Gecko-браузеров.
+
+Важно: никакого эксплойта здесь нет. Малварь повторяет штатную криптологику Firefox и использует её против пользователя.
+
+## Где Firefox хранит пароли
+
+Firefox использует два файла:
+
+- \`logins.json\` — зашифрованные логины и пароли
+- \`key4.db\` — база с криптографическими ключами (SQLite)
+
+Чтобы расшифровать пароли, нужно получить master-key. Именно этим и занимается стилер.
+
+## Функция получения ключа
+
+Ниже пример логики извлечения ключа.
+
+\`\`\`python
+def get_key(masterPassword: bytes, directory: Path) -> Tuple[Optional[bytes], Optional[str]]:
+    if (directory / 'key4.db').exists():
+        conn = sqlite3.connect(directory / 'key4.db')
+        c = conn.cursor()
+        c.execute("SELECT item1,item2 FROM metadata WHERE id = 'password';")
+        row = c.fetchone()
+        globalSalt = row[0]
+        item2 = row[1]
+        decodedItem2 = decoder.decode(item2)
+        clearText, algo = decryptPBE(decodedItem2, masterPassword, globalSalt)
+
+        if clearText == b'password-check\\x02\\x02':
+            c.execute("SELECT a11,a102 FROM nssPrivate;")
+            for row in c:
+                if row[0] != None:
+                    break
+            a11 = row[0]
+            a102 = row[1]
+            if a102 == CKA_ID:
+                decoded_a11 = decoder.decode(a11)
+                clearText, algo = decryptPBE(decoded_a11, masterPassword, globalSalt)
+                return clearText[:24], algo
+        return None, None
+    elif (directory / 'key3.db').exists():
+        keyData = readBsddb(directory / 'key3.db')
+        key = extractSecretKey(masterPassword, keyData)
+        return key, '1.2.840.113549.1.12.5.1.3'
+    else:
+        return None, None
+\`\`\`
+
+## Что происходит по шагам
+
+**1. Проверка key4.db**
+
+Если файл существует — открывается SQLite-соединение напрямую. Малварь не использует API Firefox, а читает базу как обычный файл.
+
+**2. Получение globalSalt и item2**
+
+В таблице metadata хранится:
+- item1 → globalSalt
+- item2 → зашифрованная проверочная строка
+
+**3. ASN.1 декодирование**
+
+Firefox хранит криптоданные в ASN.1 формате. Стилер декодирует структуру перед расшифровкой.
+
+**4. decryptPBE**
+
+Используется Password-Based Encryption:
+- PBKDF2 для генерации ключа из masterPassword + salt
+- 3DES-CBC (в старых версиях)
+
+Если master password не установлен, используется пустая строка — и ключ успешно извлекается.
+
+**5. Проверка строки password-check**
+
+Firefox хранит тестовую строку:
+\`password-check\\x02\\x02\`
+
+Если расшифровка совпадает — пароль корректен.
+
+**6. Извлечение a11**
+
+a11 — это зашифрованный master-key.
+После расшифровки первые 24 байта — это ключ для расшифровки логинов.
+
+24 байта — потому что Triple DES использует 3×8 байт.
+
+## Поддержка старых версий
+
+Если key4.db отсутствует, проверяется key3.db — старый формат (BerkeleyDB).
+
+Алгоритм жёстко прописан:
+\`1.2.840.113549.1.12.5.1.3\`
+
+Это OID Triple DES в режиме CBC.
+
+## Почему это важно
+
+Meduza:
+
+- не ломает Firefox
+- не брутфорсит пароли
+- не использует уязвимости
+
+Она просто повторяет официальную логику NSS и получает master-key.
+
+С точки зрения EDR это выглядит как обычный процесс, читающий SQLite и выполняющий криптографию.
+
+## Детекционные точки
+
+Мониторинг должен учитывать:
+
+- доступ к \`key4.db\` и \`logins.json\`
+- нестандартные процессы, открывающие профиль Firefox
+- аномальную работу с SQLite вне firefox.exe
+- массовую расшифровку credential-данных
+
+## Вывод
+
+Это пример зрелого стилера. Минимум шума. Никаких инжектов. Никаких эксплойтов.
+Только злоупотребление штатной криптографией браузера.
+
+Именно поэтому защита должна строиться на поведенческом анализе, а не на сигнатурах.`,
+    tags: ["Stealer", "Firefox", "Malware", "Reverse Engineering"],
+    date: "4 мар 2026",
+    readTime: 9,
+    icon: Shield,
+    accentColor: "rgba(0, 255, 98, 0.15)",
+    borderColor: "rgba(0, 255, 213, 0.25)",
+  },
+  {
     id: "stealer-anatomy",
     title: "Анатомия Stealer: как работает кража данных",
     preview: "Разбираю внутреннее устройство типичного инфостилера — от первичного заражения до эксфильтрации данных. Смотрим на цепочку: дроппер → инжект → сбор credentials → отправка на C2.",
@@ -360,7 +496,7 @@ function ArticleView({ article, readCount, onClose }) {
       if (line.startsWith("```")) {
         if (inCode) {
           elements.push(
-            <pre key={key++} className="my-4 overflow-x-auto rounded-xl border border-cyan-400/15 bg-[#020d10]/80 p-4 text-sm text-cyan-100/90 font-mono leading-relaxed">
+            <pre key={key++} className="my-5 overflow-x-auto rounded-xl border border-cyan-400/15 bg-[#020d10]/80 p-4 md:p-5 text-sm text-cyan-100/90 font-mono leading-relaxed whitespace-pre">
               {codeBlock.join("\n")}
             </pre>
           );
@@ -371,28 +507,28 @@ function ArticleView({ article, readCount, onClose }) {
       if (inCode) { codeBlock.push(line); continue; }
 
       if (line.startsWith("## ")) {
-        elements.push(<h2 key={key++} className="mt-8 mb-3 text-xl font-semibold text-white">{line.slice(3)}</h2>);
+        elements.push(<h2 key={key++} className="mt-8 mb-3 text-xl md:text-2xl font-semibold text-white border-b border-cyan-400/10 pb-2">{line.slice(3)}</h2>);
       } else if (line.startsWith("**") && line.endsWith("**")) {
-        elements.push(<p key={key++} className="mt-3 font-semibold text-cyan-200">{line.slice(2, -2)}</p>);
+        elements.push(<p key={key++} className="mt-4 font-semibold text-cyan-200 text-base md:text-lg">{line.slice(2, -2)}</p>);
       } else if (line.startsWith("- ")) {
         const parts = line.slice(2).split(/(`[^`]+`|\*\*[^*]+\*\*)/g);
         elements.push(
-          <li key={key++} className="ml-4 mt-1 text-white/75 list-disc">
+          <li key={key++} className="ml-5 mt-1.5 text-white/75 list-disc text-base md:text-lg leading-relaxed">
             {parts.map((p, i) =>
-              p.startsWith("`") ? <code key={i} className="rounded bg-cyan-500/15 px-1.5 py-0.5 text-xs text-cyan-300 font-mono">{p.slice(1,-1)}</code>
+              p.startsWith("`") ? <code key={i} className="rounded bg-cyan-500/15 px-1.5 py-0.5 text-sm text-cyan-300 font-mono">{p.slice(1,-1)}</code>
               : p.startsWith("**") ? <strong key={i} className="text-white">{p.slice(2,-2)}</strong>
               : p
             )}
           </li>
         );
       } else if (line.trim() === "") {
-        elements.push(<div key={key++} className="h-2" />);
+        elements.push(<div key={key++} className="h-3" />);
       } else {
         const parts = line.split(/(`[^`]+`|\*\*[^*]+\*\*)/g);
         elements.push(
-          <p key={key++} className="mt-2 text-base leading-relaxed text-white/75">
+          <p key={key++} className="mt-2 text-base md:text-lg leading-relaxed text-white/75">
             {parts.map((p, i) =>
-              p.startsWith("`") ? <code key={i} className="rounded bg-cyan-500/15 px-1.5 py-0.5 text-xs text-cyan-300 font-mono">{p.slice(1,-1)}</code>
+              p.startsWith("`") ? <code key={i} className="rounded bg-cyan-500/15 px-1.5 py-0.5 text-sm text-cyan-300 font-mono">{p.slice(1,-1)}</code>
               : p.startsWith("**") ? <strong key={i} className="text-white/90">{p.slice(2,-2)}</strong>
               : p
             )}
@@ -410,21 +546,21 @@ function ArticleView({ article, readCount, onClose }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.35 }}
-      className="relative z-10 mx-auto w-full max-w-3xl px-12 pb-20"
+      className="relative z-10 mx-auto w-full max-w-5xl px-4 md:px-10 pb-20"
     >
       <button
         onClick={onClose}
-        className="mt-8 mb-6 flex items-center gap-2 text-cyan-300/70 hover:text-cyan-300 transition-colors text-sm"
+        className="mt-6 mb-5 flex items-center gap-2 text-cyan-300/70 hover:text-cyan-300 transition-colors text-sm"
       >
         <ArrowLeft className="h-4 w-4" /> Назад к статьям
       </button>
 
       <div
-        className="rounded-3xl border p-8"
+        className="rounded-3xl border p-5 md:p-8"
         style={{ borderColor: article.borderColor, background: `linear-gradient(135deg, ${article.accentColor}, rgba(4,26,31,0.8))` }}
       >
-        <div className="flex items-center gap-3 mb-6">
-          <div className="rounded-xl border border-cyan-400/25 bg-cyan-500/15 p-2.5">
+        <div className="flex flex-wrap items-center gap-3 mb-5">
+          <div className="rounded-xl border border-cyan-400/25 bg-cyan-500/15 p-2.5 flex-shrink-0">
             <Icon className="h-6 w-6 text-cyan-300" />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -434,9 +570,9 @@ function ArticleView({ article, readCount, onClose }) {
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-white leading-tight">{article.title}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">{article.title}</h1>
 
-        <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-cyan-200/50">
+        <div className="mt-4 flex flex-wrap items-center gap-3 md:gap-4 text-sm text-cyan-200/50">
           <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{article.readTime} мин чтения</span>
           <span className="flex items-center gap-1.5"><Eye className="h-3.5 w-3.5" />{readCount ?? "..."} просмотров</span>
           <span>{article.date}</span>
