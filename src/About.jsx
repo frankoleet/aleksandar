@@ -356,11 +356,11 @@ export default function About() {
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-2">
               <Layers className="h-4 w-4" />
-              <span>Aleksandar •{" "}
+              <span>The Aleksandar Space •{" "}
                 <a href="https://t.me/frankoleet" target="_blank" rel="noopener noreferrer" className="text-cyan-300/70 hover:text-cyan-300 transition-colors">Contact</a>
               </span>
             </div>
-            <div className="text-cyan-200/40">© {new Date().getFullYear()} • Aleksandar</div>
+            <div className="text-cyan-200/40">© {new Date().getFullYear()} • About</div>
           </div>
         </div>
       </footer>
