@@ -133,7 +133,7 @@ export default function About() {
       <NavBar active="About" />
 
       {/* HERO */}
-      <header className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pb-6 pt-6">
+      <header className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pb-3 pt-6">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -158,6 +158,33 @@ export default function About() {
               к анализу угроз и защите систем. Имею опыт работы с учётными записями и правами доступа.
             </p>
           </div>
+        </motion.div>
+
+        {/* ── CTA кнопка под шапкой ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="mt-3"
+        >
+          <Link
+            to="/contact"
+            className="group relative flex w-full items-center justify-between overflow-hidden rounded-2xl border border-yellow-400/40 bg-yellow-400/10 px-6 py-4 transition-all hover:bg-yellow-400/18 hover:border-yellow-400/60 hover:shadow-[0_0_24px_rgba(250,204,21,0.15)]"
+          >
+            {/* свечение */}
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/5 via-transparent to-transparent" />
+            <div className="relative flex flex-col gap-0.5 md:flex-row md:items-center md:gap-3">
+              <span className="text-sm text-yellow-200/70 md:text-base">Хочешь связаться?</span>
+              <span className="text-sm text-white/60 hidden md:inline">—</span>
+              <span className="text-sm text-white/60">Оставь заявку и я свяжусь с тобой в ближайшее время</span>
+            </div>
+            <motion.div
+              whileHover={{ x: 3 }}
+              className="relative ml-4 flex-shrink-0 rounded-xl bg-yellow-400 px-4 py-2 text-sm font-semibold text-black shadow-[0_0_16px_rgba(250,204,21,0.4)] group-hover:shadow-[0_0_24px_rgba(250,204,21,0.6)] transition-shadow"
+            >
+              Оставить
+            </motion.div>
+          </Link>
         </motion.div>
       </header>
 
