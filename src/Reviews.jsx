@@ -313,21 +313,39 @@ if __name__ == "__main__":
 // ── Все теги ──────────────────────────────────────────────────────────────────
 const allTags = [...new Set(articles.flatMap((a) => a.tags))];
 
-// ── Счётчик прочтений через localStorage ─────────────────────────────────────
-function getReads() {
-  try { return JSON.parse(localStorage.getItem("article_reads") || "{}"); }
-  catch { return {}; }
+// ── Firebase счётчик (глобальный для всех устройств) ─────────────────────────
+// ШАГ 1: Зайди на https://console.firebase.google.com
+// ШАГ 2: Создай проект → Realtime Database → Начать в тестовом режиме
+// ШАГ 3: Скопируй URL базы данных (вида https://ИМЯ-default-rtdb.firebaseio.com)
+// ШАГ 4: Вставь его сюда:
+const FIREBASE_URL = "https://aleksandar666-default-rtdb.firebaseio.com";
+
+async function fetchAllCounts() {
+  try {
+    const res = await fetch(`${FIREBASE_URL}/reads.json`);
+    const data = await res.json();
+    return data || {};
+  } catch { return {}; }
 }
-function incrementRead(id) {
-  const reads = getReads();
-  reads[id] = (reads[id] || 0) + 1;
-  try { localStorage.setItem("article_reads", JSON.stringify(reads)); }
-  catch {}
-  return reads[id];
+
+async function incrementCount(id) {
+  try {
+    // Читаем текущее значение
+    const res = await fetch(`${FIREBASE_URL}/reads/${id}.json`);
+    const current = await res.json();
+    const newVal = (current || 0) + 1;
+    // Записываем новое
+    await fetch(`${FIREBASE_URL}/reads/${id}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newVal),
+    });
+    return newVal;
+  } catch { return 1; }
 }
 
 // ── Компонент полной статьи ───────────────────────────────────────────────────
-function ArticleView({ article, onClose }) {
+function ArticleView({ article, readCount, onClose }) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   // простой markdown-рендер (только ## заголовки, **bold**, `code`, блоки кода)
@@ -420,7 +438,7 @@ function ArticleView({ article, onClose }) {
 
         <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-cyan-200/50">
           <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{article.readTime} мин чтения</span>
-          <span className="flex items-center gap-1.5"><Eye className="h-3.5 w-3.5" />{getReads()[article.id] || 1} просмотров</span>
+          <span className="flex items-center gap-1.5"><Eye className="h-3.5 w-3.5" />{readCount ?? "..."} просмотров</span>
           <span>{article.date}</span>
         </div>
 
@@ -432,7 +450,7 @@ function ArticleView({ article, onClose }) {
 }
 
 // ── Карточка статьи ───────────────────────────────────────────────────────────
-function ArticleCard({ article, reads, onRead }) {
+function ArticleCard({ article, reads, loading, onRead }) {
   const Icon = article.icon;
   return (
     <motion.div
@@ -462,7 +480,7 @@ function ArticleCard({ article, reads, onRead }) {
             </div>
           </div>
           <div className="flex items-center gap-3 text-xs text-cyan-200/45 flex-shrink-0">
-            <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{reads || 0}</span>
+            <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{loading ? "..." : reads}</span>
             <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{article.readTime} мин</span>
           </div>
         </div>
@@ -485,16 +503,25 @@ function ArticleCard({ article, reads, onRead }) {
 
 // ── Главный компонент Reviews ─────────────────────────────────────────────────
 export default function Reviews() {
-  const [reads, setReads] = useState(getReads());
+  const [reads, setReads] = useState({});
+  const [loading, setLoading] = useState(true);
   const [activeTag, setActiveTag] = useState(null);
   const [search, setSearch] = useState("");
   const [openArticle, setOpenArticle] = useState(null);
 
-  const handleRead = (article) => {
-    const newCount = incrementRead(article.id);
-    setReads((prev) => ({ ...prev, [article.id]: newCount }));
+  // Загружаем счётчики с Firebase при старте
+  useEffect(() => {
+    fetchAllCounts().then((data) => {
+      setReads(data);
+      setLoading(false);
+    });
+  }, []);
+
+  const handleRead = async (article) => {
     setOpenArticle(article);
     window.scrollTo(0, 0);
+    const newCount = await incrementCount(article.id);
+    setReads((prev) => ({ ...prev, [article.id]: newCount }));
   };
 
   const filtered = articles.filter((a) => {
@@ -513,7 +540,7 @@ export default function Reviews() {
 
       <AnimatePresence mode="wait">
         {openArticle ? (
-          <ArticleView key="article" article={openArticle} onClose={() => { setOpenArticle(null); window.scrollTo(0, 0); }} />
+          <ArticleView key="article" article={openArticle} readCount={reads[openArticle?.id]} onClose={() => { setOpenArticle(null); window.scrollTo(0, 0); }} />
         ) : (
           <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
             {/* Hero */}
@@ -575,7 +602,7 @@ export default function Reviews() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.08, duration: 0.35 }}
                   >
-                    <ArticleCard article={a} reads={reads[a.id] || 0} onRead={() => handleRead(a)} />
+                    <ArticleCard article={a} reads={reads[a.id] || 0} loading={loading} onRead={() => handleRead(a)} />
                   </motion.div>
                 ))}
               </motion.div>
