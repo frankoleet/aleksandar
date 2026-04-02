@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import {
   Shield, Terminal, Radar, Medal, Briefcase, GraduationCap,
-  Cpu, Layers, Sparkles, Search, Download, Github, Lock,
+  Cpu, Layers, Sparkles, Search, Download, Github, Lock, ExternalLink,
   Timer,
   SwissFranc,
   ShieldAlert,
@@ -57,9 +57,9 @@ function Particles() {
 }
 
 // ── HoverCard — glow + подъём ─────────────────────────────────────────────────
-const HoverCard = ({ children }) => (
+const HoverCard = ({ children, className = "" }) => (
   <motion.div
-    className="rounded-2xl border border-cyan-400/10 bg-cyan-500/5 p-4"
+    className={`group rounded-2xl border border-cyan-400/10 bg-cyan-500/5 p-4 ${className}`}
     whileHover={{ y: -3, boxShadow: "0 0 0 1.5px rgba(34,211,238,0.3), 0 8px 32px rgba(6,182,212,0.18)" }}
     transition={{ duration: 0.2 }}
   >
@@ -208,6 +208,17 @@ const data = {
 
   projects: [
     {
+      name: "WEB-приложение",
+      desc: "Веб-приложение для записи на услуги и отправки заявок через удобный онлайн-интерфейс. Цель проекта — упростить процесс оформления записи, сделать подачу заявки быстрой и понятной для пользователя.",
+      bullets: [
+        "Онлайн-запись на разные услуги через удобную форму",
+        "Автоматическая отправка заявок с понятным пользовательским сценарием",
+        "Адаптивный интерфейс и удобная структура страниц",
+        "Поддерживается мультиязычная структура и адаптация под разные сценарии использования",
+      ],
+      tags: ["React", "Vite", "Frontend", "i18n"], linkText: "Посетить", link: "https://alisa.help",
+    },
+    {
       name: "Скрипты автоматизации учётных записей",
       desc: "Python-скрипты для упрощения операций с учётными записями и данными. Цель — снизить ручной труд при типовых IAM-задачах.",
       bullets: ["Автоматизация создания, изменения и деактивации учётных записей", "Логирование действий и базовый аудит операций"],
@@ -341,7 +352,7 @@ export default function App() {
       </div>
 
       {/* MAIN */}
-      <main className="relative z-10 mx-auto w-full max-w-screen-2xl grid grid-cols-1 gap-4 px-12 pb-16 md:grid-cols-12 print:pb-4">
+      <main className="relative z-10 mx-auto w-full max-w-screen-2xl grid grid-cols-1 gap-4 px-4 pb-16 md:grid-cols-12 md:px-12 print:pb-4">
 
         {/* LEFT */}
         <div className="md:col-span-7 flex flex-col gap-4">
@@ -374,25 +385,49 @@ export default function App() {
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Поиск по проектам (Python, GitHub, Linux...)" className="w-full bg-transparent text-base text-white/80 outline-none placeholder:text-cyan-200/35" />
             </div>
             <div className="space-y-4">
-              {filteredProjects.map((p) => (
-                <HoverCard key={p.name}>
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <div className="text-xl font-semibold text-white">{p.name}</div>
-                      <p className="mt-1 text-base text-cyan-100/65">{p.desc}</p>
+              {filteredProjects.map((p) => {
+                const isDecoratedProject = p.link === "https://alisa.help";
+
+                return (
+                <HoverCard key={p.name} className={isDecoratedProject ? "relative overflow-hidden" : ""}>
+                  {isDecoratedProject && (
+                    <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+                      <div
+                        className="absolute inset-0 bg-cover bg-no-repeat bg-center opacity-[0.24] transition-opacity duration-300 group-hover:opacity-[0.38] md:hidden"
+                        style={{ backgroundImage: "url('/webm.png')" }}
+                      />
+                      <div className="project-card-desktop-image-container">
+                        <img
+                          src="/web.png"
+                          alt=""
+                          className="project-card-desktop-image transition-opacity duration-300 group-hover:opacity-[0.52]"
+                        />
+                        <div className="project-card-desktop-image-overlay transition-opacity duration-300 group-hover:opacity-[0.72]" />
+                      </div>
+                      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,26,31,0.985)_0%,rgba(4,26,31,0.95)_28%,rgba(4,26,31,0.84)_48%,rgba(4,26,31,0.60)_72%,rgba(4,26,31,0.46)_100%)] opacity-100 transition-opacity duration-300 group-hover:opacity-[0.55]" />
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.10),transparent_52%)] opacity-100 transition-opacity duration-300 group-hover:opacity-[0.7] md:hidden" />
                     </div>
-                    <a href={p.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/15 bg-[#020d10]/40 px-3 py-1.5 text-sm text-cyan-200/65 hover:bg-cyan-500/20 hover:text-cyan-200 hover:border-cyan-400/30 transition-all">
-                      <Github className="h-3.5 w-3.5" />{p.linkText}
-                    </a>
-                  </div>
-                  <ul className="mt-3 list-disc space-y-1.5 pl-5 text-base text-white/75">
-                    {p.bullets.map((b, i) => <li key={i}>{b}</li>)}
-                  </ul>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {p.tags.map((t) => <Chip key={t}>{t}</Chip>)}
+                  )}
+                  <div className={`min-w-0 ${isDecoratedProject ? "relative z-10" : ""}`}>
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="text-xl font-semibold text-white">{p.name}</div>
+                        <p className="mt-1 text-base text-cyan-100/65">{p.desc}</p>
+                      </div>
+                      <a href={p.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/15 bg-[#020d10]/40 px-3 py-1.5 text-sm text-cyan-200/65 hover:bg-cyan-500/20 hover:text-cyan-200 hover:border-cyan-400/30 transition-all">
+                        {p.linkText === "GitHub" ? <Github className="h-3.5 w-3.5" /> : <ExternalLink className="h-3.5 w-3.5" />}
+                        {p.linkText}
+                      </a>
+                    </div>
+                    <ul className="mt-3 list-disc space-y-1.5 pl-5 text-base text-white/75">
+                      {p.bullets.map((b, i) => <li key={i}>{b}</li>)}
+                    </ul>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {p.tags.map((t) => <Chip key={t}>{t}</Chip>)}
+                    </div>
                   </div>
                 </HoverCard>
-              ))}
+              )})}
               {filteredProjects.length === 0 && (
                 <div className="rounded-2xl border border-cyan-400/10 bg-cyan-500/5 p-4 text-base text-cyan-100/65">Ничего не найдено. Попробуй другой запрос.</div>
               )}
@@ -477,7 +512,7 @@ export default function App() {
       </main>
 
       {/* FOOTER */}
-      <footer className="relative z-10 mx-auto w-full max-w-screen-2xl px-12 pb-10 text-sm text-cyan-200/40 print:hidden">
+      <footer className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 pb-10 text-sm text-cyan-200/40 print:hidden md:px-12">
         <div className="rounded-2xl border border-cyan-400/10 bg-[#041a1f]/50 p-4">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-2">
@@ -498,6 +533,41 @@ export default function App() {
       )}
 
     <style>{`
+      .project-card-desktop-image-container {
+        display: none;
+      }
+
+      @media (min-width: 768px) {
+        .project-card-desktop-image-container {
+          position: absolute;
+          top: 4.6rem;
+          right: 0.95rem;
+          bottom: 0.95rem;
+          width: min(31rem, 62%);
+          display: block;
+          overflow: hidden;
+          border-radius: 1rem;
+        }
+
+        .project-card-desktop-image {
+          width: 100%;
+          height: 100%;
+          display: block;
+          object-fit: cover;
+          object-position: center;
+          opacity: 0.34;
+        }
+
+        .project-card-desktop-image-overlay {
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(180deg, rgba(4, 26, 31, 0.18), rgba(4, 26, 31, 0.52)),
+            radial-gradient(circle at 52% 46%, rgba(34, 211, 238, 0.1), transparent 56%);
+          opacity: 0.92;
+        }
+      }
+
       @media print {
         /* 1. Включаем печать фоновых цветов и графики */
         * {
