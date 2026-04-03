@@ -219,6 +219,19 @@ const data = {
       tags: ["React", "Vite", "Frontend", "i18n"], linkText: "Посетить", link: "https://alisa.help",
     },
     {
+      name: "Веб-приложение для бронирования",
+      desc: "Веб-приложение для бронирования и оформления записи на услуги в онлайн-формате. Проект создан для того, чтобы сократить ручные действия, упростить взаимодействие с клиентом и сделать процесс записи максимально удобным.",
+      bullets: [
+        "Реализована онлайн-запись и оформление бронирования",
+        "Упрощён процесс отправки заявок через веб-интерфейс",
+        "Продумана удобная структура страниц и навигации",
+        "Адаптивный интерфейс для разных устройств",
+      ],
+      tags: ["React", "Vite", "Booking", "Frontend", "UI"],
+      linkText: "Посетить",
+      link: "https://alisa.help",
+    },
+    {
       name: "Скрипты автоматизации учётных записей",
       desc: "Python-скрипты для упрощения операций с учётными записями и данными. Цель — снизить ручной труд при типовых IAM-задачах.",
       bullets: ["Автоматизация создания, изменения и деактивации учётных записей", "Логирование действий и базовый аудит операций"],
@@ -251,6 +264,17 @@ const data = {
     { label: "Email", value: "frankoleet@gmail.com", href: "mailto:frankoleet@gmail.com" },
     { label: "GutHub", value: "github.com/frankoleet", href: "https://github.com/frankoleet" },
   ],
+};
+
+const PROJECT_BACKGROUNDS = {
+  "WEB-приложение": {
+    desktop: "/web.png",
+    mobile: "/webm.png",
+  },
+  "Веб-приложение для бронирования": {
+    desktop: "/web2.png",
+    mobile: "/webm2.png",
+  },
 };
 
 export default function App() {
@@ -386,7 +410,10 @@ export default function App() {
             </div>
             <div className="space-y-4">
               {filteredProjects.map((p) => {
-                const isDecoratedProject = p.link === "https://alisa.help";
+                const projectBackground = PROJECT_BACKGROUNDS[p.name];
+                const isDecoratedProject = Boolean(projectBackground);
+                const mobileBackground = projectBackground?.mobile;
+                const desktopBackground = projectBackground?.desktop;
 
                 return (
                 <HoverCard key={p.name} className={isDecoratedProject ? "relative overflow-hidden" : ""}>
@@ -394,11 +421,11 @@ export default function App() {
                     <div className="pointer-events-none absolute inset-0" aria-hidden="true">
                       <div
                         className="absolute inset-0 bg-cover bg-no-repeat bg-center opacity-[0.24] transition-opacity duration-300 group-hover:opacity-[0.38] md:hidden"
-                        style={{ backgroundImage: "url('/webm.png')" }}
+                        style={{ backgroundImage: `url('${mobileBackground}')` }}
                       />
                       <div className="project-card-desktop-image-container">
                         <img
-                          src="/web.png"
+                          src={desktopBackground}
                           alt=""
                           className="project-card-desktop-image transition-opacity duration-300 group-hover:opacity-[0.52]"
                         />
