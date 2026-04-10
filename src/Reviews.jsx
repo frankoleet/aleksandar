@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import Seo from "./Seo.jsx";
 import {
   Shield, Terminal, Clock, Eye, Tag, ArrowLeft,
   ChevronRight, BookOpen, Cpu, Lock, Search, X,
@@ -72,7 +73,7 @@ const NavBar = () => {
     : location.pathname === "/about" ? "About"
     : "Profile";
   return (
-    <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pt-6">
+    <div className="sticky top-0 z-30 mx-auto w-full max-w-screen-2xl px-4 pb-2 pt-4 md:px-12 md:pt-6">
       <div className="flex justify-center">
         <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
           {[
@@ -669,6 +670,11 @@ export default function Reviews() {
 
   return (
     <div className="min-h-screen bg-[#020d10] text-white">
+      <Seo
+        title="Technical Reviews"
+        description="Technical reviews and security research articles by Aleksandar."
+        path="/reviews"
+      />
       <Particles />
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.2]" style={{ backgroundImage: "radial-gradient(circle at 15% 10%, rgba(6,182,212,0.35) 0, rgba(0,0,0,0) 45%), radial-gradient(circle at 85% 35%, rgba(20,184,166,0.25) 0, rgba(0,0,0,0) 55%)" }} />
 
@@ -748,6 +754,7 @@ export default function Reviews() {
                 </div>
               )}
             </main>
+
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import Seo from "./Seo.jsx";
 import { Send, CheckCircle, AlertCircle, User, MessageSquare, AtSign, Loader } from "lucide-react";
 
 // ── Частицы ───────────────────────────────────────────────────────────────────
@@ -54,7 +55,7 @@ const NavBar = () => {
     : location.pathname === "/about" ? "About"
     : null;
   return (
-    <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pt-6">
+    <div className="sticky top-0 z-30 mx-auto w-full max-w-screen-2xl px-4 pb-2 pt-4 md:px-12 md:pt-6">
       <div className="flex justify-center">
         <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
           {[
@@ -148,6 +149,11 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-[#020d10] text-white">
+      <Seo
+        title="Contact Aleksandar"
+        description="Contact Aleksandar about frontend projects, technical reviews and collaboration."
+        path="/contact"
+      />
       <Particles />
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.15]"
         style={{ backgroundImage: "radial-gradient(circle at 25% 15%, rgba(250,204,21,0.2) 0, transparent 45%), radial-gradient(circle at 75% 60%, rgba(6,182,212,0.25) 0, transparent 50%)" }} />

@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
+import Seo from "./Seo.jsx";
 import {
   Shield, Terminal, Radar, Medal, Briefcase, GraduationCap,
   Cpu, Layers, Sparkles, Search, Download, Github, Lock, ExternalLink,
@@ -92,7 +93,7 @@ const NavBar = () => {
     : location.pathname === "/about" ? "About"
     : "Profile";
   return (
-    <div className="relative z-20 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pt-6 print:hidden">
+    <div className="sticky top-0 z-30 mx-auto w-full max-w-screen-2xl px-4 pb-2 pt-4 print:hidden md:px-12 md:pt-6">
       <div className="flex justify-center">
         <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
           {[
@@ -229,7 +230,7 @@ const data = {
       ],
       tags: ["React", "Vite", "Booking", "Frontend", "UI"],
       linkText: "Посетить",
-      link: "https://alisa.help",
+      link: "https://barb-murex.vercel.app/",
     },
     {
       name: "Скрипты автоматизации учётных записей",
@@ -304,6 +305,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#020d10] text-white">
+      <Seo
+        description="Portfolio website of Aleksandar with frontend projects, technical reviews and contact information."
+        path="/"
+      />
 
       <Particles />
 
@@ -540,15 +545,38 @@ export default function App() {
 
       {/* FOOTER */}
       <footer className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 pb-10 text-sm text-cyan-200/40 print:hidden md:px-12">
-        <div className="rounded-2xl border border-cyan-400/10 bg-[#041a1f]/50 p-4">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-2">
-              <Layers className="h-4 w-4" />
-              <span>The Aleksandar Space •{" "}
-                <a href="https://t.me/frankoleet" target="_blank" rel="noopener noreferrer" className="text-cyan-300/70 hover:text-cyan-300 transition-colors">Contact</a>
-              </span>
+        <div className="rounded-2xl border border-cyan-400/10 bg-[#041a1f]/50 p-5">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <div className="text-base font-semibold text-white">Aleksandar Portfolio</div>
+              <div className="mt-1 max-w-md text-sm leading-6 text-cyan-200/55">
+                Frontend projects, technical reviews and contact
+              </div>
             </div>
-            <div className="text-cyan-200/40">© {new Date().getFullYear()} • Profile</div>
+            <div className="flex flex-wrap gap-3 text-sm md:justify-end">
+              <a href="https://t.me/frankoleet" target="_blank" rel="noopener noreferrer" className="text-cyan-300/70 transition-colors hover:text-cyan-300">Telegram</a>
+              <a href="https://github.com/frankoleet" target="_blank" rel="noopener noreferrer" className="text-cyan-300/70 transition-colors hover:text-cyan-300">GitHub</a>
+              <a href="mailto:frankoleet@gmail.com" className="text-cyan-300/70 transition-colors hover:text-cyan-300">Email</a>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-col items-start gap-3 border-t border-cyan-400/10 pt-4 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl text-cyan-200/40 leading-6">
+              © {new Date().getFullYear()}{" "}
+              <Link
+                to="/"
+                onClick={() => window.scrollTo(0, 0)}
+                className="text-cyan-200/55 transition-colors hover:text-cyan-300"
+              >
+                The Aleksandar Space
+              </Link>
+              . Crafted & Designed by Aleksandar
+            </div>
+            <Link
+              to="/contact"
+              className="inline-flex w-full items-center justify-center rounded-md border border-cyan-400/20 bg-cyan-500/10 px-3 py-1.5 text-sm text-cyan-100 transition-all hover:border-cyan-400/40 hover:bg-cyan-500/20 hover:text-cyan-50 sm:w-auto"
+            >
+              Contact Me
+            </Link>
           </div>
         </div>
       </footer>
