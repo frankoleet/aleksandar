@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Seo from "./Seo.jsx";
 import {
@@ -51,39 +51,6 @@ function Particles() {
 }
 
 // ── NavBar (идентичен App.jsx и Reviews.jsx) ──────────────────────────────────
-const NavBar = () => {
-  const location = useLocation();
-  const active = location.pathname === "/" ? "Profile"
-    : location.pathname === "/reviews" ? "Reviews"
-    : location.pathname === "/about" ? "About"
-    : "Profile";
-  return (
-    <div className="sticky top-0 z-30 mx-auto w-full max-w-screen-2xl px-4 pb-2 pt-4 md:px-12 md:pt-6">
-      <div className="flex justify-center">
-        <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
-          {[
-            { label: "Profile", to: "/" },
-            { label: "Reviews", to: "/reviews" },
-            { label: "About",   to: "/about" },
-          ].map((item) => (
-            <Link
-              key={item.label}
-              to={item.to}
-              className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
-                active === item.label
-                  ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
-                  : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </div>
-  );
-};
-
 // ── Timeline item ─────────────────────────────────────────────────────────────
 const TimelineItem = ({ year, title, desc, icon: Icon, delay = 0 }) => (
   <motion.div
@@ -125,7 +92,7 @@ const Card = ({ children, delay = 0 }) => (
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-[#020d10] text-white">
+    <div className="min-h-screen bg-[#020d10] text-white" data-nav-section="About">
       <Seo
         title="About Aleksandar"
         description="Learn more about Aleksandar, his background, skills, education and project focus."
@@ -135,8 +102,6 @@ export default function About() {
 
       {/* фоновый глоу */}
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.2]" style={{ backgroundImage: "radial-gradient(circle at 20% 10%, rgba(6, 212, 143, 0.35) 0, rgba(187, 28, 28, 0) 45%), radial-gradient(circle at 80% 40%, rgba(20, 184, 94, 0.2) 0, rgba(255, 0, 0, 0) 50%)" }} />
-
-      <NavBar active="About" />
 
       {/* HERO */}
       <header className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pb-3 pt-6">

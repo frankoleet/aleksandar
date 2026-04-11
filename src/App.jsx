@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { motion, useInView } from "framer-motion";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import Seo from "./Seo.jsx";
 import {
   Shield, Terminal, Radar, Medal, Briefcase, GraduationCap,
@@ -86,39 +86,6 @@ const Badge = ({ children }) => (
 );
 
 // ── Навигация ─────────────────────────────────────────────────────────────────
-const NavBar = () => {
-  const location = useLocation();
-  const active = location.pathname === "/" ? "Profile"
-    : location.pathname === "/reviews" ? "Reviews"
-    : location.pathname === "/about" ? "About"
-    : "Profile";
-  return (
-    <div className="sticky top-0 z-30 mx-auto w-full max-w-screen-2xl px-4 pb-2 pt-4 print:hidden md:px-12 md:pt-6">
-      <div className="flex justify-center">
-        <nav className="flex items-center gap-1 rounded-2xl border border-cyan-400/15 bg-[#041a1f]/70 px-2 py-1.5 backdrop-blur shadow-[0_0_0_1px_rgba(34,211,238,0.05)]">
-          {[
-            { label: "Profile", to: "/" },
-            { label: "Reviews", to: "/reviews" },
-            { label: "About",   to: "/about" },
-          ].map((item) => (
-            <Link
-              key={item.label}
-              to={item.to}
-              className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
-                active === item.label
-                  ? "bg-cyan-500/20 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]"
-                  : "text-cyan-200/55 hover:text-cyan-200/90 hover:bg-cyan-500/10"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </div>
-  );
-};
-
 const Section = ({ icon: Icon, title, subtitle, children }) => (
   <motion.section
     className="rounded-2xl border border-cyan-400/10 bg-[#041a1f]/60 p-5 shadow-[0_0_0_1px_rgba(34,211,238,0.05),0_18px_60px_rgba(0,0,0,0.6)] backdrop-blur"
@@ -304,7 +271,7 @@ export default function App() {
   const handlePrint = () => window.print();
 
   return (
-    <div className="min-h-screen bg-[#020d10] text-white">
+    <div className="min-h-screen bg-[#020d10] text-white" data-nav-section="Profile">
       <Seo
         description="Portfolio website of Aleksandar with frontend projects, technical reviews and contact information."
         path="/"
@@ -314,8 +281,6 @@ export default function App() {
 
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.2]" style={{ backgroundImage: "radial-gradient(circle at 15% 10%, rgba(6,182,212,0.35) 0, rgba(0,0,0,0) 45%), radial-gradient(circle at 85% 35%, rgba(20,184,166,0.25) 0, rgba(0,0,0,0) 55%), radial-gradient(circle at 50% 95%, rgba(34,211,238,0.18) 0, rgba(0,0,0,0) 45%)" }} />
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(to_bottom,rgba(6,182,212,0.04),transparent_30%,transparent_70%,rgba(20,184,166,0.03))]" />
-
-      <NavBar />
 
       {/* HEADER */}
       <header className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pb-6 pt-4 print:pt-4">

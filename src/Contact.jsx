@@ -158,8 +158,6 @@ export default function Contact() {
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.15]"
         style={{ backgroundImage: "radial-gradient(circle at 25% 15%, rgba(250,204,21,0.2) 0, transparent 45%), radial-gradient(circle at 75% 60%, rgba(6,182,212,0.25) 0, transparent 50%)" }} />
 
-      <NavBar />
-
       <main className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 md:px-12 pt-8 pb-20">
         <div className="mx-auto max-w-2xl">
           <AnimatePresence mode="wait">
