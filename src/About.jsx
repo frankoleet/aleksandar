@@ -2,8 +2,10 @@ import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Seo from "./Seo.jsx";
+import { downloadCvPdf } from "./cvPdf.js";
+import { profileData as data, TELEGRAM_APP_URL, TELEGRAM_FALLBACK_URL } from "./profileData.js";
 import {
-  Shield, Code, BookOpen, Github, Target,
+  Shield, Code, BookOpen, Github, Target, Download, Send,
   Cpu, Terminal, User, Layers,
   TimerReset,
 } from "lucide-react";
@@ -91,6 +93,41 @@ const Card = ({ children, delay = 0 }) => (
 );
 
 export default function About() {
+  const handleTelegramContact = (event) => {
+    event.preventDefault();
+
+    const cleanupCallbacks = [];
+    const cleanup = () => {
+      cleanupCallbacks.forEach((callback) => callback());
+    };
+
+    const fallbackId = window.setTimeout(() => {
+      cleanup();
+      window.location.href = TELEGRAM_FALLBACK_URL;
+    }, 700);
+
+    const handleSuccess = () => {
+      cleanup();
+    };
+
+    const clearFallback = () => window.clearTimeout(fallbackId);
+    cleanupCallbacks.push(clearFallback);
+
+    window.addEventListener("blur", handleSuccess, { once: true });
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (document.hidden) {
+          handleSuccess();
+        }
+      },
+      { once: true },
+    );
+
+    cleanupCallbacks.push(() => window.removeEventListener("blur", handleSuccess));
+    window.location.href = TELEGRAM_APP_URL;
+  };
+
   return (
     <div className="min-h-screen bg-[#020d10] text-white" data-nav-section="About">
       <Seo
@@ -117,17 +154,39 @@ export default function About() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#020d10]/60 via-transparent to-transparent" />
 
           <div className="relative p-6 md:p-8">
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="inline-flex items-center rounded-full border border-cyan-400/30 bg-cyan-500/15 px-4 py-1.5 text-sm font-medium text-cyan-100">
-                <Shield className="mr-2 h-3.5 w-3.5" />ABOUT ME
-              </span>
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="min-w-0">
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center rounded-full border border-cyan-400/30 bg-cyan-500/15 px-4 py-1.5 text-sm font-medium text-cyan-100">
+                    <Shield className="mr-2 h-3.5 w-3.5" />ABOUT ME
+                  </span>
+                </div>
+                <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">Обо мне</h1>
+                <p className="mt-2 text-lg text-cyan-200/65 md:text-xl">{data.role}</p>
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70">
+                  Начинающий специалист в области информационной безопасности с устойчивым интересом
+                  к анализу угроз и защите систем. Имею опыт работы с учётными записями и правами доступа.
+                </p>
+              </div>
+              <div className="flex w-full flex-wrap gap-3 md:w-auto md:max-w-[22rem] md:justify-end">
+                <button
+                  type="button"
+                  onClick={downloadCvPdf}
+                  className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-2xl border border-cyan-400/25 bg-cyan-500/15 px-5 py-3 text-sm font-medium text-cyan-50 transition-all hover:border-cyan-300/40 hover:bg-cyan-500/22 hover:shadow-[0_0_20px_rgba(6,182,212,0.18)] active:scale-[0.98] sm:flex-none"
+                >
+                  <Download className="h-4 w-4" />
+                  Скачать CV
+                </button>
+                <a
+                  href={TELEGRAM_APP_URL}
+                  onClick={handleTelegramContact}
+                  className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-2xl border border-cyan-400/15 bg-[#020d10]/45 px-5 py-3 text-sm font-medium text-white/90 transition-all hover:border-cyan-400/35 hover:bg-cyan-500/12 hover:text-cyan-50 active:scale-[0.98] sm:flex-none"
+                >
+                  <Send className="h-4 w-4" />
+                  Связаться
+                </a>
+              </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">Обо мне</h1>
-            <p className="mt-2 text-lg md:text-xl text-cyan-200/65">Специалист по информационной безопасности (Junior)</p>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70">
-              Начинающий специалист в области информационной безопасности с устойчивым интересом
-              к анализу угроз и защите систем. Имею опыт работы с учётными записями и правами доступа.
-            </p>
           </div>
         </motion.div>
 
@@ -326,16 +385,12 @@ export default function About() {
               </div>
             </div>
             <div className="space-y-2">
-              {[
-                { label: "Telegram", value: "@frankoleet", href: "https://t.me/frankoleet" },
-                { label: "Email", value: "frankoleet@gmail.com", href: "mailto:frankoleet@gmail.com" },
-                { label: "GitHub", value: "github.com/frankoleet", href: "https://github.com/frankoleet" },
-              ].map((c) => (
+              {data.links.map((c) => (
                 <a
                   key={c.label}
                   href={c.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={c.href.startsWith("mailto:") ? undefined : "_blank"}
+                  rel={c.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
                   className="flex items-center justify-between rounded-xl border border-cyan-400/10 bg-cyan-500/5 px-4 py-3 hover:border-cyan-400/30 hover:bg-cyan-500/12 transition-all group"
                 >
                   <span className="text-sm text-cyan-200/50">{c.label}</span>
@@ -353,15 +408,23 @@ export default function About() {
         <div className="rounded-2xl border border-cyan-400/10 bg-[#041a1f]/50 p-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <div className="text-base font-semibold text-white">Aleksandar</div>
+              <div className="text-base font-semibold text-white">{data.name}</div>
               <div className="mt-1 max-w-md text-sm leading-6 text-cyan-200/55">
                 Frontend projects, technical reviews and contact
               </div>
             </div>
             <div className="flex flex-wrap gap-3 text-sm md:justify-end">
-              <a href="https://t.me/frankoleet" target="_blank" rel="noopener noreferrer" className="text-cyan-300/70 transition-colors hover:text-cyan-300">Telegram</a>
-              <a href="https://github.com/frankoleet" target="_blank" rel="noopener noreferrer" className="text-cyan-300/70 transition-colors hover:text-cyan-300">GitHub</a>
-              <a href="mailto:frankoleet@gmail.com" className="text-cyan-300/70 transition-colors hover:text-cyan-300">Email</a>
+              {data.links.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target={link.href.startsWith("mailto:") ? undefined : "_blank"}
+                  rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                  className="text-cyan-300/70 transition-colors hover:text-cyan-300"
+                >
+                  {link.label}
+                </a>
+              ))}
             </div>
           </div>
           <div className="mt-4 flex flex-col items-start gap-3 border-t border-cyan-400/10 pt-4 md:flex-row md:items-center md:justify-between">
