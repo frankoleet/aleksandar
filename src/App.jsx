@@ -547,9 +547,15 @@ export default function App() {
       </footer>
 
       {toast && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-2xl border border-cyan-400/15 bg-[#020d10]/90 px-4 py-2 text-base text-cyan-100/80 shadow-xl backdrop-blur">
-          {toast}
-        </motion.div>
+        <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-full rounded-2xl border border-cyan-400/15 bg-[#020d10]/90 px-4 py-2 text-base text-cyan-100/80 shadow-xl backdrop-blur"
+          >
+            {toast}
+          </motion.div>
+        </div>
       )}
 
     <style>{`
