@@ -415,7 +415,7 @@ export default function App() {
               >
                 The Aleksandar Space
               </Link>
-              . Crafted & Designed by Aleksandar
+              . Crafted & Designed by Aleksandar.
             </div>
             <Link
               to="/contact"
