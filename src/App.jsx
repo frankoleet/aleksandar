@@ -2,10 +2,12 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Seo from "./Seo.jsx";
+import { downloadCvPdf } from "./cvPdf.js";
 import { profileData as data } from "./profileData.js";
 import {
-  Shield, Terminal, Radar, Medal, Briefcase, GraduationCap,
+  Shield, Terminal, Radar, Briefcase, GraduationCap,
   Cpu, Layers, Sparkles, Search, Download, Github, Lock, ExternalLink,
+  MessageCircle,
   Timer,
   SwissFranc,
   ShieldAlert,
@@ -110,11 +112,6 @@ const Section = ({ icon: Icon, title, subtitle, children }) => (
 
 const Divider = () => <div className="my-4 h-px w-full bg-cyan-400/10" />;
 
-const copyToClipboard = async (text) => {
-  try { await navigator.clipboard.writeText(text); return true; }
-  catch { return false; }
-};
-
 const PROJECT_BACKGROUNDS = {
   "WEB-приложение": {
     desktop: "/web.png",
@@ -128,7 +125,6 @@ const PROJECT_BACKGROUNDS = {
 
 export default function App() {
   const [query, setQuery] = useState("");
-  const [toast, setToast] = useState(null);
 
   const filteredProjects = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -137,19 +133,6 @@ export default function App() {
       [p.name, p.desc, ...(p.bullets || []), ...(p.tags || [])].join(" ").toLowerCase().includes(q)
     );
   }, [query]);
-
-  const handleCopy = async () => {
-    const text =
-      `${data.name} — ${data.role}\n\n${data.tagline}\n\n` +
-      `Опыт:\n${data.experience.map((e) => `- ${e.title} (${e.company}) — ${e.period}`).join("\n")}\n\n` +
-      `Навыки:\n- ${data.skills.core.join("\n- ")}\n\n` +
-      `Контакты:\n${data.links.map((l) => `${l.label}: ${l.value}`).join("\n")}`;
-    const ok = await copyToClipboard(text);
-    setToast(ok ? "Скопировано в буфер обмена." : "Не получилось скопировать :(");
-    setTimeout(() => setToast(null), 2200);
-  };
-
-  const handlePrint = () => window.print();
 
   return (
     <div className="min-h-screen bg-[#020d10] text-white" data-nav-section="Profile">
@@ -176,34 +159,34 @@ export default function App() {
           {/* Плавный градиент снизу */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#020d10]/60 via-transparent to-transparent" />
 
-          <div className="relative p-6">
+          <div className="relative p-4 sm:p-6">
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge><Shield className="mr-2 h-3.5 w-3.5" />INFOSEC PROFILE</Badge>
                 <Badge><Lock className="mr-2 h-3.5 w-3.5" />SECURITY MINDED</Badge>
               </div>
-              <h1 className="mt-4 text-5xl font-semibold tracking-tight md:text-6xl">{data.name}</h1>
-              <p className="mt-2 text-xl text-cyan-200/70 md:text-2xl">{data.role}</p>
-              <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/75 md:text-lg">{data.tagline}</p>
+              <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">{data.name}</h1>
+              <p className="mt-2 text-lg text-cyan-200/70 sm:text-xl md:text-2xl">{data.role}</p>
+              <p className="mt-4 max-w-3xl text-sm leading-relaxed text-white/75 sm:text-base md:text-lg">{data.tagline}</p>
             </div>
 
-            <div className="flex flex-col gap-2 md:items-end print:hidden">
-              <div className="flex w-full gap-2 md:w-auto">
-                <button onClick={handleCopy} className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl border border-cyan-400/15 bg-cyan-500/5 px-5 py-2.5 text-base font-medium text-white/90 hover:bg-cyan-500/15 md:flex-none transition-colors">
-                  <Download className="h-4 w-4" />Copy
+            <div className="flex w-full flex-col gap-2 md:w-[320px] md:shrink-0 print:hidden">
+              <div className="grid w-full grid-cols-1 gap-2 min-[390px]:grid-cols-2">
+                <button type="button" onClick={downloadCvPdf} className="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-2xl border border-cyan-400/15 bg-cyan-500/5 px-4 py-2.5 text-sm font-medium text-white/90 transition-colors hover:border-cyan-400/30 hover:bg-cyan-500/15 sm:text-base">
+                  <Download className="h-4 w-4" />Скачать CV
                 </button>
-                <button onClick={handlePrint} className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl border border-cyan-400/30 bg-cyan-500/15 px-5 py-2.5 text-base font-medium text-cyan-100 hover:bg-cyan-500/25 md:flex-none transition-colors">
-                  <Medal className="h-4 w-4" />Print
-                </button>
+                <Link to="/contact" className="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-2xl border border-cyan-300/40 bg-cyan-400/20 px-4 py-2.5 text-sm font-medium text-cyan-50 shadow-[0_0_22px_rgba(34,211,238,0.12)] transition-all hover:border-cyan-300/60 hover:bg-cyan-400/30 hover:shadow-[0_0_28px_rgba(34,211,238,0.2)] sm:text-base">
+                  <MessageCircle className="h-4 w-4" />Связаться
+                </Link>
               </div>
-              <div className="rounded-2xl border border-cyan-400/10 bg-[#020d10]/50 p-3 text-sm text-cyan-200/55">
+              <div className="w-full rounded-2xl border border-cyan-400/10 bg-[#020d10]/50 p-3 text-sm text-cyan-200/55">
                 <div className="mb-2 font-medium text-cyan-100/70">Контакты</div>
                 <div className="flex flex-col gap-1">
                   {data.links.map((l) => (
-                    <div key={l.label} className="flex items-center justify-between gap-4">
-                      <span className="text-cyan-200/45">{l.label}</span>
-                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="truncate text-cyan-100/75 hover:text-cyan-300 transition-colors">{l.value}</a>
+                    <div key={l.label} className="flex min-w-0 items-center justify-between gap-3">
+                      <span className="shrink-0 text-cyan-200/45">{l.label}</span>
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="min-w-0 truncate text-right text-cyan-100/75 transition-colors hover:text-cyan-300">{l.value}</a>
                     </div>
                   ))}
                 </div>
@@ -426,18 +409,6 @@ export default function App() {
           </div>
         </div>
       </footer>
-
-      {toast && (
-        <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-full rounded-2xl border border-cyan-400/15 bg-[#020d10]/90 px-4 py-2 text-base text-cyan-100/80 shadow-xl backdrop-blur"
-          >
-            {toast}
-          </motion.div>
-        </div>
-      )}
 
     <style>{`
       .project-card-desktop-image-container {
